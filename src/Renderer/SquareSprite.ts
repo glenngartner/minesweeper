@@ -21,7 +21,7 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
         'clickedMine': {color: 0xFF0000},
         'clickedFlag': {color: 0xEE8D6F}
     };
-    private debugMineLocs = false;
+    private debugMineLocs = true;
 
     constructor(square: Square, x = 0, y = 0, texture = '') {
         super(GameService.scene, x, y, texture);
@@ -67,7 +67,9 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
     private setEventListeners(sprite = this) {
         sprite.setInteractive();
         sprite.on('pointerover', () => {
-            console.log(`mouse over sprite at pos: ${sprite.x}, ${sprite.y}`);
+            console.log(`num adjacent to this: ${this.square.numAdjacentMines}`);
+            console.log(`adjacent squares: `, this.square.adjacent);
+            if (this.square.hasMine) this.defaultColor = 'clickedMine';
             this.swapTexture('pointerOver');
         }, this);
         sprite.on('pointerout', () => {
@@ -79,9 +81,21 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
             let isRMB = GameService.scene.input.activePointer.rightButtonDown();
             let color = '';
             if (isLMB) {
-                if (this.square.hasMine) color = 'clickedMine';
-                else color = 'clickedEmpty';
-                this.revealAdjacent(DataService.getAdjacent(this.square), color);
+                // if I click on a mine, game over
+                if (this.square.hasMine) {
+                    color = 'clickedMine';
+                    console.log("GAME OVER");
+                }
+                // if has adjacent, done, just orange
+                else if (this.square.numAdjacentMines > 0) {
+                    color = 'clickedFlag';
+                    GameService.scene.add.text(this.getCenter().x, this.getCenter().y, `${this.square.numAdjacentMines}`, {color: 0x000000});
+                    console.log(`drawing a number ${this.square.numAdjacentMines} on top`);
+                } else {
+                    // if empty, and no adjacent mines
+                    color = 'clickedEmpty';
+                    this.revealAdjacent(this.square.adjacent, color);
+                }
             }
             if (isRMB) {
                 color = 'clickedFlag';
@@ -94,16 +108,19 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
     }
 
     private revealAdjacent(squares: Square[], color: string) {
+        let searched: Square[] = [];
         for (let square of squares) {
-            square.renderRep.swapTexture(color);
-            square.renderRep.defaultColor = color;
-            square.renderRep.hasBeenClicked = !square.renderRep.hasBeenClicked;
+            if (square.numAdjacentMines > 0) {
+                // make orange
+                color = 'clickedFlag';
+                square.renderRep.swapTexture(color);
+            } else {
+                color = 'clickedEmpty';
+                square.renderRep.swapTexture(color);
+                square.renderRep.defaultColor = color;
+                square.renderRep.hasBeenClicked = !square.renderRep.hasBeenClicked;
+                // this.revealAdjacent(square.adjacent, 'clickedEmpty');
+            }
         }
     }
-
-    private checkForMine(square: Square){
-
-    }
-
-
 }

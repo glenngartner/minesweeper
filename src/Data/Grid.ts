@@ -10,6 +10,7 @@ export class Grid {
         this.buildGrid();
         this.gridToService();
         this.assignRandomMines();
+        this.assignAdjcentMineValue();
     }
 
     private buildGrid() {
@@ -39,32 +40,34 @@ export class Grid {
         adjacent.push(this.getNorthWest(square));
         adjacent.push(this.getSouthEast(square));
         adjacent.push(this.getSouthWest(square));
+
+        adjacent = adjacent.filter((sq: Square) => !!sq);
         return adjacent;
     }
 
     private getWest(square: Square): Square {
         let index = this.grid.indexOf(square);
         let onLeftCol = square.pos.x === 1;
-        if (index === 0 || onLeftCol) return square;
+        if (index === 0 || onLeftCol) return null;
         else return this.grid[this.grid.indexOf(square) - 1];
     }
     private getEast(square: Square): Square {
         let index = this.grid.indexOf(square);
         let onRightCol = square.pos.x === this._cols;
-        if (index === this.grid.length - 1 || onRightCol) return square;
+        if (index === this.grid.length - 1 || onRightCol) return null;
         else return this.grid[this.grid.indexOf(square) + 1];
     }
     private getNorth(square: Square): Square {
         let index = this.grid.indexOf(square);
         let onTopRow = square.pos.y === 1;
-        if (onTopRow) return square;
+        if (onTopRow) return null;
         else return this.grid[index - this._cols];
     }
 
     private getSouth(square: Square): Square {
         let index = this.grid.indexOf(square);
         let onBottomRow = square.pos.y === this._rows;
-        if (onBottomRow) return square;
+        if (onBottomRow) return null;
         else return this.grid[index + this._cols];
     }
 
@@ -72,7 +75,7 @@ export class Grid {
         let index = this.grid.indexOf(square);
         let onTopRow = square.pos.y === 1;
         let onRightCol = square.pos.x === this._cols;
-        if (onTopRow || onRightCol) return square;
+        if (onTopRow || onRightCol) return null;
         return this.grid[index - this._cols + 1];
     }
 
@@ -80,7 +83,7 @@ export class Grid {
         let index = this.grid.indexOf(square);
         let onTopRow = square.pos.y === 1;
         let onLeftCol = square.pos.x === 1;
-        if (onTopRow || onLeftCol) return square;
+        if (onTopRow || onLeftCol) return null;
         else return this.grid[index - this._cols - 1];
     }
 
@@ -88,7 +91,7 @@ export class Grid {
         let index = this.grid.indexOf(square);
         let onBottomRow = square.pos.y === this._rows;
         let onRightCol = square.pos.x === this._cols;
-        if (onBottomRow || onRightCol) return square;
+        if (onBottomRow || onRightCol) return null;
         return this.grid[index + this._cols + 1];
     }
 
@@ -96,7 +99,7 @@ export class Grid {
         let index = this.grid.indexOf(square);
         let onBottomRow = square.pos.y === this._rows;
         let onLeftCol = square.pos.x === 1;
-        if (onBottomRow || onLeftCol) return square;
+        if (onBottomRow || onLeftCol) return null;
         else return this.grid[index + this._cols - 1];
     }
 
@@ -110,7 +113,23 @@ export class Grid {
         }
 
         for (let random of storedRandoms) {
+            if (this.grid[random] === undefined) break;
             this.grid[random].hasMine = true;
         }
+    }
+
+    private assignAdjcentMineValue() {
+        for (let square of this.grid) {
+            let numAdjacent = 0;
+            let adjacent: Square[] = [];
+            adjacent = this.getAdjacent(square);
+            square.adjacent = adjacent;
+
+            for (let square of adjacent) {
+                if (square.hasMine) numAdjacent++;
+            }
+            square.numAdjacentMines = numAdjacent;
+        }
+        console.log(`assigned adjacent mines: `, this.grid);
     }
 }

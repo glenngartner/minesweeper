@@ -9,6 +9,8 @@ export class Square {
     public width = 50;
     public height = 50;
     public renderRep: SquareSprite;
+    public numAdjacentMines = 0;
+    public adjacent: Square[] = [];
 
     constructor(x = 0, y = 0) {
         this.pos.x = x;
