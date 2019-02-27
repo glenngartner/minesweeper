@@ -1,5 +1,5 @@
-import {SimpleGame} from "./Game";
+import {RenderGame} from "./Renderer/Game";
 
 window.onload = () => {
-    let game = new SimpleGame();
+    let game = new RenderGame();
 };
