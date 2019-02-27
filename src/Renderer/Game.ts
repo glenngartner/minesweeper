@@ -13,8 +13,8 @@ export class RenderGame {
         };
         let scene = new GameScene(sceneConfig);
         let gameConfig = <GameConfig>{
-            width: 800,
-            height: 800,
+            width: 450,
+            height: 450,
             parent: 'game',
             type: Phaser.AUTO,
             backgroundColor: '#d5eeee',

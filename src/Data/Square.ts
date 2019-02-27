@@ -1,4 +1,5 @@
 import {Vec2} from "../interfaces";
+import {SquareSprite} from "../Renderer/SquareSprite";
 
 export class Square {
     public isRevealed = false;
@@ -7,6 +8,7 @@ export class Square {
     public pos: Vec2 = {x: 0, y: 0};
     public width = 50;
     public height = 50;
+    public renderRep: SquareSprite;
 
     constructor(x = 0, y = 0) {
         this.pos.x = x;

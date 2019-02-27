@@ -1,5 +1,6 @@
 import {GameService} from "./GameService";
 import {Square} from "../Data/Square";
+import {DataService} from "../Data/DataService";
 
 interface textureColor {
     [key: string]: {
@@ -24,6 +25,7 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
     constructor(square: Square, x = 0, y = 0, texture = '') {
         super(GameService.scene, x, y, texture);
         this.square = square;
+        this.square.renderRep = this;
         this.swapTexture('rest');
         this.setEventListeners();
     }
@@ -73,6 +75,7 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
             if (isLMB) {
                 if (this.square.hasMine) color = 'clickedMine';
                 else color = 'clickedEmpty';
+                this.revealAdjacent(DataService.getAdjacent(this.square), color);
             }
             if (isRMB) {
                 color = 'clickedFlag';
@@ -82,6 +85,14 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
             this.hasBeenClicked = !this.hasBeenClicked;
         }, this);
 
+    }
+
+    private revealAdjacent(squares: Square[], color: string) {
+        for (let square of squares) {
+            square.renderRep.swapTexture(color);
+            square.renderRep.defaultColor = color;
+            square.renderRep.hasBeenClicked = !square.renderRep.hasBeenClicked;
+        }
     }
 
 
