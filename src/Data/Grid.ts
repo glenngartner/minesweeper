@@ -9,6 +9,7 @@ export class Grid {
     constructor() {
         this.buildGrid();
         this.gridToService();
+        this.assignRandomMines();
     }
 
     private buildGrid() {
@@ -97,5 +98,19 @@ export class Grid {
         let onLeftCol = square.pos.x === 1;
         if (onBottomRow || onLeftCol) return square;
         else return this.grid[index + this._cols - 1];
+    }
+
+
+    private assignRandomMines(){
+        let storedRandoms : number[] = [];
+        let maxMines = 10;
+        while(storedRandoms.length < maxMines){
+            var r = Math.floor(Math.random() * this._rows * this._cols) + 1;
+            if(storedRandoms.indexOf(r) === -1) storedRandoms.push(r);
+        }
+
+        for (let random of storedRandoms) {
+            this.grid[random].hasMine = true;
+        }
     }
 }

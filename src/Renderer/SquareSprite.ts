@@ -26,7 +26,11 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
         super(GameService.scene, x, y, texture);
         this.square = square;
         this.square.renderRep = this;
-        this.swapTexture('rest');
+        if (square.hasMine) {
+            this.swapTexture('clickedMine');
+        } else {
+            this.swapTexture('rest');
+        }
         this.setEventListeners();
     }
 
