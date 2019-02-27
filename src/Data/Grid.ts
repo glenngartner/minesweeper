@@ -1,14 +1,14 @@
 import {Square} from "./Square";
-import {GameService} from "../Renderer/GameService";
+import {DataService} from "./DataService";
 
 export class Grid {
     private _cols = 8;
     private _rows = 8;
-    public squares: Square[] = [];
+    public grid: Square[] = [];
 
     constructor() {
         this.buildGrid();
-        this.drawGrid();
+        this.gridToService();
     }
 
     buildGrid() {
@@ -16,28 +16,14 @@ export class Grid {
         let y = 1;
         for (y; y <= this._rows; y++) {
             for (x; x <= this._cols; x++) {
-                this.squares.push(new Square(x, y));
+                this.grid.push(new Square(x, y));
             }
             x = 1;
         }
         console.log(`Grid build: `, this);
     }
 
-    drawGrid() {
-        for (let square of this.squares) {
-            let graph = GameService.scene.add.graphics();
-            graph.setDefaultStyles({
-                lineStyle: {
-                    width: 1,
-                    color: 0x333333,
-                    alpha: 1
-                },
-                fillStyle: {
-                    color: 0xFF0000,
-                    alpha: 1
-                }
-            });
-            graph.fillRoundedRect(0, 0, 50, 50, 5);
-        }
+    gridToService(){
+        DataService.grid = this.grid;
     }
 }
