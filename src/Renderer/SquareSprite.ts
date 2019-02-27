@@ -21,12 +21,13 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
         'clickedMine': {color: 0xFF0000},
         'clickedFlag': {color: 0xEE8D6F}
     };
+    private debugMineLocs = false;
 
     constructor(square: Square, x = 0, y = 0, texture = '') {
         super(GameService.scene, x, y, texture);
         this.square = square;
         this.square.renderRep = this;
-        if (square.hasMine) {
+        if (this.debugMineLocs && square.hasMine) {
             this.swapTexture('clickedMine');
         } else {
             this.swapTexture('rest');
@@ -72,6 +73,7 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
         sprite.on('pointerout', () => {
             this.swapTexture(this.defaultColor);
         }, this);
+
         sprite.on('pointerdown', () => {
             let isLMB = GameService.scene.input.activePointer.leftButtonDown();
             let isRMB = GameService.scene.input.activePointer.rightButtonDown();
@@ -97,6 +99,10 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
             square.renderRep.defaultColor = color;
             square.renderRep.hasBeenClicked = !square.renderRep.hasBeenClicked;
         }
+    }
+
+    private checkForMine(square: Square){
+
     }
 
 
