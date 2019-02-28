@@ -1,5 +1,6 @@
 import {Square} from "./Square";
 import {DataService} from "./DataService";
+import {GameService} from "../Renderer/GameService";
 
 export class Grid {
     private _cols = 8;
@@ -111,6 +112,7 @@ export class Grid {
         let storedRandoms : number[] = [];
         let num = this._rows * this._cols / 6.4;
         let maxMines = Math.floor(num);
+        GameService.numMines = maxMines;
         // console.log(`mines generated `, maxMines);
         while(storedRandoms.length < maxMines){
             var r = Math.floor(Math.random() * this._rows * this._cols);

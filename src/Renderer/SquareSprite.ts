@@ -12,7 +12,6 @@ interface textureColor {
 export class SquareSprite extends Phaser.GameObjects.Sprite {
 
     private square: Square;
-    // private sprite: Phaser.GameObjects.Sprite;
     public text: Phaser.GameObjects.Text;
     private hasBeenClicked = false;
     private defaultColor = 'rest';
@@ -23,14 +22,19 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
         'clickedMine': {color: 0xFF0000},
         'clickedFlag': {color: 0xEE8D6F}
     };
-    private debugMineLocs = false;
+    private debugMineLocs = true;
 
     constructor(square: Square, x = 0, y = 0, texture = '') {
         super(GameService.scene, x, y, texture);
         this.square = square;
         this.square.renderRep = this;
 
-        this.text = GameService.scene.add.text(x - 10, y - 12, '', {align: 'center', stroke: 0x000, strokeThickness: 5, fontSize: '24px'});
+        this.text = GameService.scene.add.text(x - 10, y - 12, '', {
+            align: 'center',
+            stroke: 0x000,
+            strokeThickness: 5,
+            fontSize: '24px'
+        });
         this.text.depth = 1;
         this.depth = 0;
 
@@ -107,6 +111,7 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
                     color = 'clickedEmpty';
                     this.revealAdjacent(this.square.adjacent);
                 }
+
             }
             if (isRMB) {
                 color = 'clickedFlag';
@@ -116,19 +121,47 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
             this.swapTexture(color);
             this.defaultColor = color;
             this.hasBeenClicked = !this.hasBeenClicked;
+            // quick way to watch if a square is revealed or flagged
+            // helps track game end state
+            if (this.defaultColor === 'clickedEmpty') {
+                this.square.isRevealed = true;
+            }
+            this.checkForWinState();
         }, this);
 
+    }
+
+    private checkForWinState() {
+        let numTiles = GameService.renderGrid.length;
+        let numMines = GameService.numMines;
+        let numRevealed = 0;
+        for (let num of DataService.grid.grid) {
+            if (num.isRevealed) numRevealed++;
+        }
+        if ((numMines + numRevealed) === numTiles) {
+            //     debugger;
+            GameService.gameOvertext.setText("You Win!");
+            GameService.gameOvertext.setColor('lime');
+            GameService.gameOvertext.setFontSize(90);
+            GameService.gameOvertext.setPosition(
+                GameService.scene.game.renderer.width / 2 - GameService.gameOvertext.width / 2,
+                GameService.scene.game.renderer.height / 2 - GameService.gameOvertext.height / 2
+            );
+            GameService.gameOvertext.setVisible(true);
+            GameService.gameOvertext.depth = 2;
+        }
     }
 
     private revealAdjacent(squares: Square[], alreadySearched: Square[] = []) {
         let color = '';
         for (let square of squares) {
             if (square.numAdjacentMines > 0) {
-                // make orange
+                //show adjacent number
                 color = 'clickedEmpty';
                 square.renderRep.defaultColor = color;
                 square.renderRep.text.setText(`${square.numAdjacentMines}`);
                 square.renderRep.swapTexture(color);
+                square.isRevealed = true;
             } else {
                 color = 'clickedEmpty';
                 square.renderRep.defaultColor = color;
@@ -136,6 +169,7 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
                 square.renderRep.swapTexture(color);
                 square.renderRep.defaultColor = color;
                 square.renderRep.hasBeenClicked = !square.renderRep.hasBeenClicked;
+                square.isRevealed = true;
                 alreadySearched.push(square);
                 // remove searched for items
                 let culledArray = square.adjacent.filter((val: Square) => val !== alreadySearched.find((obj: Square) => obj.pos === val.pos));
