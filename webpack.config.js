@@ -14,7 +14,7 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                use: 'ts-loader',
+                use: ['ts-loader'],
                 exclude: /node_modules/
             }
         ]
@@ -28,7 +28,6 @@ module.exports = {
     },
     plugins: [
         new webpack.ProvidePlugin({
-            WebFont: "https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js",
             Phaser: 'phaser'
         })
     ]

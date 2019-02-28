@@ -13,6 +13,8 @@
   "license": "ISC",
   "devDependencies": {
     "@types/webfontloader": "^1.6.29",
+    "css-loader": "^2.1.0",
+    "style-loader": "^0.23.1",
     "ts-loader": "^5.3.3",
     "typescript": "^3.3.3333",
     "webpack": "^4.29.5",
