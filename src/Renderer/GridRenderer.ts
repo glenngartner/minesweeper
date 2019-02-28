@@ -4,17 +4,17 @@ import {SquareSprite} from "./SquareSprite";
 import {GameService} from "./GameService";
 
 export class GridRenderer {
-    private sprites: Phaser.GameObjects.Group[] = [];
+    private sprites: SquareSprite[] = [];
 
     constructor(){
         this.drawGrid(DataService.grid.grid);
+        GameService.renderGrid = this.sprites;
     }
     public drawGrid(squares: Square[]) {
         for (let square of squares) {
             let calcX = square.pos.x * square.width;
             let calcY = square.pos.y * square.height;
             let grp = new SquareSprite(square, calcX, calcY, '');
-            // GameService.scene.add.group(grp);
             this.sprites.push(grp);
         }
     }

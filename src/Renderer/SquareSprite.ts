@@ -1,5 +1,6 @@
 import {GameService} from "./GameService";
 import {Square} from "../Data/Square";
+import {DataService} from "../Data/DataService";
 
 interface textureColor {
     [key: string]: {
@@ -8,11 +9,11 @@ interface textureColor {
     };
 }
 
-export class SquareSprite extends Phaser.GameObjects.Group {
+export class SquareSprite extends Phaser.GameObjects.Sprite {
 
     private square: Square;
-    private sprite: Phaser.GameObjects.Sprite;
-    private text: Phaser.GameObjects.Text;
+    // private sprite: Phaser.GameObjects.Sprite;
+    public text: Phaser.GameObjects.Text;
     private hasBeenClicked = false;
     private defaultColor = 'rest';
     private texTypes: textureColor = {
@@ -23,15 +24,15 @@ export class SquareSprite extends Phaser.GameObjects.Group {
         'clickedFlag': {color: 0xEE8D6F}
     };
     private debugMineLocs = true;
-    private _searchAdjacent: Square[] = [];
 
     constructor(square: Square, x = 0, y = 0, texture = '') {
-        super(GameService.scene);
+        super(GameService.scene, x, y, texture);
         this.square = square;
         this.square.renderRep = this;
 
-        this.add(this.sprite = new Phaser.GameObjects.Sprite(GameService.scene, x, y, texture));
-        this.add(this.text = new Phaser.GameObjects.Text(GameService.scene, this.sprite.getCenter().x, this.sprite.getCenter().y,'', {}));
+        this.text = GameService.scene.add.text(x - 10, y - 12, '', {align: 'center', stroke: 0x000, strokeThickness: 5, fontSize: '24px'});
+        this.text.depth = 1;
+        this.depth = 0;
 
         if (this.debugMineLocs && square.hasMine) {
             this.swapTexture('clickedMine');
@@ -39,15 +40,14 @@ export class SquareSprite extends Phaser.GameObjects.Group {
             this.swapTexture('rest');
         }
         this.setEventListeners();
-        console.log(`created square group`, this);
     }
 
-    private swapTexture(key: string) {
+    public swapTexture(key: string) {
         let texKey = this.createTexture(this.square, this.texTypes[key].color, key);
         this.texTypes[key].texKey = texKey;
     }
 
-    createTexture(square = this.square, color = 0xFFFFFF, key: string): string {
+    private createTexture(square = this.square, color = 0xFFFFFF, key: string): string {
         let calcX = square.pos.x * square.width - square.width / 2;
         let calcY = square.pos.y * square.height - square.height / 2;
         let graph = GameService.scene.add.graphics();
@@ -67,15 +67,14 @@ export class SquareSprite extends Phaser.GameObjects.Group {
             5);
         let texKey = key;
         let tex = graph.generateTexture(texKey, square.width, square.height);
-        this.sprite.setTexture(texKey);
+        this.setTexture(texKey);
         return texKey;
     }
 
-    private setEventListeners(sprite = this.sprite) {
+    private setEventListeners(sprite = this) {
         sprite.setInteractive();
         sprite.on('pointerover', () => {
             if (this.square.hasMine) this.defaultColor = 'clickedMine';
-            console.log(`pointer over x: ${sprite.x}, y: ${sprite.y}`);
             this.swapTexture('pointerOver');
         }, this);
         sprite.on('pointerout', () => {
@@ -90,11 +89,16 @@ export class SquareSprite extends Phaser.GameObjects.Group {
                 // if I click on a mine, game over
                 if (this.square.hasMine) {
                     color = 'clickedMine';
+                    for (let sprite of GameService.renderGrid) {
+                        sprite.swapTexture('clickedMine');
+                        sprite.text.setText('');
+                        sprite.defaultColor = 'clickedMine';
+                    }
                     console.log("GAME OVER");
                 }
                 // if has adjacent, done, just orange
                 else if (this.square.numAdjacentMines > 0) {
-                    color = 'clickedFlag';
+                    color = 'clickedEmpty';
                     this.text.setText(`${this.square.numAdjacentMines}`);
                 } else {
                     // if empty, and no adjacent mines
@@ -116,12 +120,15 @@ export class SquareSprite extends Phaser.GameObjects.Group {
         let color = '';
         for (let square of squares) {
             if (square.numAdjacentMines > 0) {
-                this._searchAdjacent.push(square);
                 // make orange
-                color = 'clickedFlag';
+                color = 'clickedEmpty';
+                square.renderRep.defaultColor = color;
+                square.renderRep.text.setText(`${square.numAdjacentMines}`);
                 square.renderRep.swapTexture(color);
             } else {
                 color = 'clickedEmpty';
+                square.renderRep.defaultColor = color;
+                square.renderRep.text.setText(``);
                 square.renderRep.swapTexture(color);
                 square.renderRep.defaultColor = color;
                 square.renderRep.hasBeenClicked = !square.renderRep.hasBeenClicked;
