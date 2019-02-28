@@ -5,12 +5,14 @@ export class Grid {
     private _cols = 8;
     private _rows = 8;
     public grid: Square[] = [];
+    public emptySquares: Square[] = [];
 
     constructor() {
         this.buildGrid();
         this.gridToService();
         this.assignRandomMines();
         this.assignAdjcentMineValue();
+        this.buildEmptyList();
     }
 
     private buildGrid() {
@@ -131,5 +133,11 @@ export class Grid {
             square.numAdjacentMines = numAdjacent;
         }
         console.log(`assigned adjacent mines: `, this.grid);
+    }
+
+    private buildEmptyList(){
+        for (let square of this.grid) {
+            if (square.numAdjacentMines === 0) this.emptySquares.push(square);
+        }
     }
 }

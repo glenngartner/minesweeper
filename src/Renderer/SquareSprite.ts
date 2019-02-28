@@ -22,6 +22,7 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
         'clickedFlag': {color: 0xEE8D6F}
     };
     private debugMineLocs = true;
+    private _searchAdjacent: Square[] = [];
 
     constructor(square: Square, x = 0, y = 0, texture = '') {
         super(GameService.scene, x, y, texture);
@@ -94,7 +95,7 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
                 } else {
                     // if empty, and no adjacent mines
                     color = 'clickedEmpty';
-                    this.revealAdjacent(this.square.adjacent, color);
+                    this.revealAdjacent(this.square.adjacent);
                 }
             }
             if (isRMB) {
@@ -107,10 +108,11 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
 
     }
 
-    private revealAdjacent(squares: Square[], color: string) {
-        let searched: Square[] = [];
+    private revealAdjacent(squares: Square[], alreadySearched: Square[] = []) {
+        let color = '';
         for (let square of squares) {
             if (square.numAdjacentMines > 0) {
+                this._searchAdjacent.push(square);
                 // make orange
                 color = 'clickedFlag';
                 square.renderRep.swapTexture(color);
@@ -119,7 +121,11 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
                 square.renderRep.swapTexture(color);
                 square.renderRep.defaultColor = color;
                 square.renderRep.hasBeenClicked = !square.renderRep.hasBeenClicked;
-                // this.revealAdjacent(square.adjacent, 'clickedEmpty');
+                alreadySearched.push(square);
+                // remove searched for items
+                let culledArray = square.adjacent.filter((val: Square) => val !== alreadySearched.find((obj: Square) => obj.pos === val.pos));
+                debugger;
+                this.revealAdjacent(culledArray, alreadySearched);
             }
         }
     }
