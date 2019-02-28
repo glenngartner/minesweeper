@@ -24,20 +24,7 @@ export class RenderGame {
     public resetGame(){
         this.scene.rows = this.rows;
         this.scene.cols = this.cols;
-        // this.setDims();
         this.scene.scene.restart();
-        // this.canvas.width = this.width;
-        // this.canvas.height = this.height;
-
-        // this.scene.scene.restart(); // doesn't dynamically resize canvas, but is a nice refresh option
-        // this.scene.cameras.resize(this.width, this.height);
-        // this.scene.cameras.main.setPosition(0, 0);
-        // this.scene.game.renderer.resize(this.width, this.height);
-        // this.scene.cameras.main.setBounds(0, 0, this.width, this.height);
-        // this.scene.sys.game.destroy(true);
-        // this.scene = null;
-        // this.game = null;
-        // this.buildGame();
     }
 
     private buildGame(){
@@ -50,7 +37,6 @@ export class RenderGame {
         let gameConfig = <GameConfig>{
             width: 1050,
             height: 750,
-            // parent: 'game',
             canvas: this.canvas,
             type: Phaser.WEBGL,
             backgroundColor: '#d5eeee',

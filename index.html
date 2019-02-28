@@ -21,16 +21,28 @@
         <div class="col-auto mx-auto">
             <form class="form-inline row">
                 <div class="form-group col-sm-4">
-                    <label for="numRows" class="col-form-label-sm">Rows
-                        <input type="number" min="1" max="14" class="form-control" id="numRows" value="8"
-                               placeholder="Num of Rows">
-                    </label>
+                    <div class="row">
+                        <div class="col-sm-4 my-auto">
+                            <label for="numRows" class="col-form-label-sm">Rows
+                            </label>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="number" min="1" max="14" class="form-control" id="numRows" value="8"
+                                   placeholder="Num of Rows">
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group col-sm-4">
-                    <label for="numCols" class="col-form-label-sm">Columns
-                        <input type="number" min="1" max="20" class="form-control" id="numCols" value="8"
-                               placeholder="Num of Cols">
-                    </label>
+                    <div class="row">
+                        <div class="col-sm-4 my-auto">
+                            <label for="numCols" class="col-form-label-sm">Columns
+                            </label>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="number" min="1" max="20" class="form-control" id="numCols" value="8"
+                                   placeholder="Num of Cols">
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group col-sm-4">
                     <button type="button" id="gameReset" class="btn btn-primary my-auto">Reset</button>
