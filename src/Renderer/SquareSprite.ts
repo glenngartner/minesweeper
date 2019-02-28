@@ -12,6 +12,7 @@ interface textureColor {
 export class SquareSprite extends Phaser.GameObjects.Sprite {
 
     private square: Square;
+    private graph: Phaser.GameObjects.Graphics;
     public text: Phaser.GameObjects.Text;
     private hasBeenClicked = false;
     private defaultColor = 'rest';
@@ -24,10 +25,13 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
     };
     private debugMineLocs = false;
 
-    constructor(square: Square, x = 0, y = 0, texture = '') {
+    constructor(square: Square, parent: Phaser.GameObjects.Container, x = 0, y = 0, texture = '') {
         super(GameService.scene, x, y, texture);
         this.square = square;
+        this.parentContainer = parent;
         this.square.renderRep = this;
+        this.graph = GameService.scene.add.graphics();
+        if (this.parentContainer) this.parentContainer.add(this.graph);
 
         this.text = GameService.scene.add.text(x - 10, y - 12, '', {
             align: 'center',
@@ -35,6 +39,7 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
             strokeThickness: 5,
             fontSize: '24px'
         });
+        this.parentContainer.add(this.text);
         this.text.depth = 1;
         this.depth = 0;
 
@@ -54,24 +59,25 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
     private createTexture(square = this.square, color = 0xFFFFFF, key: string): string {
         let calcX = square.pos.x * square.width - square.width / 2;
         let calcY = square.pos.y * square.height - square.height / 2;
-        let graph = GameService.scene.add.graphics();
-        graph.fillStyle(color, 1);
-        graph.lineStyle(5, 0x222222, 1);
-        graph.fillRoundedRect(
+        this.graph.clear();
+        this.graph.fillStyle(color, 1);
+        this.graph.lineStyle(5, 0x222222, 1);
+        this.graph.fillRoundedRect(
             calcX,
             calcY,
             square.width,
             square.height,
             5);
-        graph.strokeRoundedRect(
+        this.graph.strokeRoundedRect(
             calcX,
             calcY,
             square.width,
             square.height,
             5);
         let texKey = key;
-        let tex = graph.generateTexture(texKey, square.width, square.height);
+        let tex = this.graph.generateTexture(texKey, square.width, square.height);
         this.setTexture(texKey);
+        // graph.destroy();
         return texKey;
     }
 
@@ -139,13 +145,12 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
             if (num.isRevealed) numRevealed++;
         }
         if ((numMines + numRevealed) === numTiles) {
-            //     debugger;
             GameService.gameOvertext.setText("You Win!");
             GameService.gameOvertext.setColor('lime');
             GameService.gameOvertext.setFontSize(90);
             GameService.gameOvertext.setPosition(
-                GameService.scene.game.renderer.width / 2 - GameService.gameOvertext.width / 2,
-                GameService.scene.game.renderer.height / 2 - GameService.gameOvertext.height / 2
+                GameService.game.renderer.width / 2 - GameService.gameOvertext.width / 2,
+                GameService.game.renderer.height / 2 - GameService.gameOvertext.height / 2
             );
             GameService.gameOvertext.setVisible(true);
             GameService.gameOvertext.depth = 2;
