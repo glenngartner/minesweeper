@@ -18,7 +18,7 @@ export class RenderGame {
             parent: 'game',
             type: Phaser.AUTO,
             backgroundColor: '#d5eeee',
-            scene:scene
+            scene:scene,
         };
 
         GameService.game = new Phaser.Game(gameConfig);

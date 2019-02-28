@@ -1,6 +1,5 @@
 import {GameService} from "./GameService";
 import {Square} from "../Data/Square";
-import {DataService} from "../Data/DataService";
 
 interface textureColor {
     [key: string]: {
@@ -9,9 +8,11 @@ interface textureColor {
     };
 }
 
-export class SquareSprite extends Phaser.GameObjects.Sprite {
+export class SquareSprite extends Phaser.GameObjects.Group {
 
     private square: Square;
+    private sprite: Phaser.GameObjects.Sprite;
+    private text: Phaser.GameObjects.Text;
     private hasBeenClicked = false;
     private defaultColor = 'rest';
     private texTypes: textureColor = {
@@ -25,15 +26,20 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
     private _searchAdjacent: Square[] = [];
 
     constructor(square: Square, x = 0, y = 0, texture = '') {
-        super(GameService.scene, x, y, texture);
+        super(GameService.scene);
         this.square = square;
         this.square.renderRep = this;
+
+        this.add(this.sprite = new Phaser.GameObjects.Sprite(GameService.scene, x, y, texture));
+        this.add(this.text = new Phaser.GameObjects.Text(GameService.scene, this.sprite.getCenter().x, this.sprite.getCenter().y,'', {}));
+
         if (this.debugMineLocs && square.hasMine) {
             this.swapTexture('clickedMine');
         } else {
             this.swapTexture('rest');
         }
         this.setEventListeners();
+        console.log(`created square group`, this);
     }
 
     private swapTexture(key: string) {
@@ -61,16 +67,15 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
             5);
         let texKey = key;
         let tex = graph.generateTexture(texKey, square.width, square.height);
-        this.setTexture(texKey);
+        this.sprite.setTexture(texKey);
         return texKey;
     }
 
-    private setEventListeners(sprite = this) {
+    private setEventListeners(sprite = this.sprite) {
         sprite.setInteractive();
         sprite.on('pointerover', () => {
-            console.log(`num adjacent to this: ${this.square.numAdjacentMines}`);
-            console.log(`adjacent squares: `, this.square.adjacent);
             if (this.square.hasMine) this.defaultColor = 'clickedMine';
+            console.log(`pointer over x: ${sprite.x}, y: ${sprite.y}`);
             this.swapTexture('pointerOver');
         }, this);
         sprite.on('pointerout', () => {
@@ -90,8 +95,7 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
                 // if has adjacent, done, just orange
                 else if (this.square.numAdjacentMines > 0) {
                     color = 'clickedFlag';
-                    GameService.scene.add.text(this.getCenter().x, this.getCenter().y, `${this.square.numAdjacentMines}`, {color: 0x000000});
-                    console.log(`drawing a number ${this.square.numAdjacentMines} on top`);
+                    this.text.setText(`${this.square.numAdjacentMines}`);
                 } else {
                     // if empty, and no adjacent mines
                     color = 'clickedEmpty';
@@ -124,7 +128,6 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
                 alreadySearched.push(square);
                 // remove searched for items
                 let culledArray = square.adjacent.filter((val: Square) => val !== alreadySearched.find((obj: Square) => obj.pos === val.pos));
-                debugger;
                 this.revealAdjacent(culledArray, alreadySearched);
             }
         }

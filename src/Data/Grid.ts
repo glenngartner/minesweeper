@@ -110,7 +110,7 @@ export class Grid {
         let storedRandoms : number[] = [];
         let maxMines = 10;
         while(storedRandoms.length < maxMines){
-            var r = Math.floor(Math.random() * this._rows * this._cols) + 1;
+            var r = Math.floor(Math.random() * this._rows * this._cols);
             if(storedRandoms.indexOf(r) === -1) storedRandoms.push(r);
         }
 
@@ -132,7 +132,6 @@ export class Grid {
             }
             square.numAdjacentMines = numAdjacent;
         }
-        console.log(`assigned adjacent mines: `, this.grid);
     }
 
     private buildEmptyList(){
