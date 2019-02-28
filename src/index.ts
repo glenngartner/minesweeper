@@ -19,12 +19,16 @@ window.onload = () => {
     // rows input
     let rowsInput = <HTMLInputElement>document.getElementById('numRows');
     rowsInput.addEventListener('change', (ev: UIEvent) => {
+        if (parseInt(rowsInput.value) > 14) rowsInput.value = '14';
+        if (parseInt(rowsInput.value) <= 0) rowsInput.value = '1';
         btn.innerHTML = 'Update';
     });
 
     // columns input
     let colsInput = <HTMLInputElement>document.getElementById('numCols');
     colsInput.addEventListener('change', (ev: UIEvent) => {
+        if (parseInt(colsInput.value) > 20) colsInput.value = '20';
+        if (parseInt(colsInput.value) <= 0) colsInput.value = '1';
         btn.innerHTML = 'Update';
     });
 };
