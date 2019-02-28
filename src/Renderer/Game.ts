@@ -3,26 +3,41 @@ import {GameScene} from "./GameScene";
 
 export class RenderGame {
 
-    public game: Phaser.Game;
+    private game: Phaser.Game;
+    private sceneName = 'scene01';
+    private scene: GameScene;
 
-    constructor() {
+    constructor(public rows = 8, public cols = 8) {
+        this.buildGame();
+    }
+
+    public resetGame(){
+        this.scene.rows = this.rows;
+        this.scene.cols = this.cols;
+        // this.scene.scene.restart(); // doesn't dynamically resize canvas, but is a nice refresh option
+        this.game.destroy(true);
+        this.buildGame();
+    }
+
+    private buildGame(){
         let sceneConfig = {
-            key: 'scene01',
+            key: this.sceneName,
             active: true,
             visible: true
         };
-        let scene = new GameScene(sceneConfig);
+        this.scene = new GameScene(this.rows, this.cols, sceneConfig);
         let gameConfig = <GameConfig>{
-            width: 450,
-            height: 450,
+            width: this.cols * 50 + 50,
+            height: this.rows * 50 + 50,
             parent: 'game',
             type: Phaser.AUTO,
             backgroundColor: '#d5eeee',
-            scene:scene,
+            scene:this.scene,
         };
 
-        GameService.game = new Phaser.Game(gameConfig);
-        GameService.scene = scene;
+        this.game = new Phaser.Game(gameConfig);
+        GameService.game = this.game;
+        GameService.scene = this.scene;
     }
 
 }

@@ -23,7 +23,7 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
         'clickedMine': {color: 0xFF0000},
         'clickedFlag': {color: 0xEE8D6F}
     };
-    private debugMineLocs = true;
+    private debugMineLocs = false;
 
     constructor(square: Square, x = 0, y = 0, texture = '') {
         super(GameService.scene, x, y, texture);
@@ -74,7 +74,7 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
     private setEventListeners(sprite = this) {
         sprite.setInteractive();
         sprite.on('pointerover', () => {
-            if (this.square.hasMine) this.defaultColor = 'clickedMine';
+            // if (this.square.hasMine) this.defaultColor = 'clickedMine';
             this.swapTexture('pointerOver');
         }, this);
         sprite.on('pointerout', () => {

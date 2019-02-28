@@ -7,7 +7,9 @@ export class Grid {
     public grid: Square[] = [];
     public emptySquares: Square[] = [];
 
-    constructor() {
+    constructor(rows = 8, cols = 8) {
+        this._rows = rows;
+        this._cols = cols;
         this.buildGrid();
         this.gridToService();
         this.assignRandomMines();
@@ -24,7 +26,6 @@ export class Grid {
             }
             x = 1;
         }
-        console.log(`Grid build: `, this);
     }
 
     private gridToService() {

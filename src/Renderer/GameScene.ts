@@ -3,7 +3,7 @@ import {GridRenderer} from "./GridRenderer";
 
 export class GameScene extends Phaser.Scene {
 
-    constructor(config: Phaser.Scenes.Settings.Config) {
+    constructor(public rows = 8, public cols = 8, config: Phaser.Scenes.Settings.Config) {
         super(config);
     }
 
@@ -13,7 +13,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     create(){
-        let grid = new Grid();
+        let grid = new Grid(this.rows, this.cols);
         let gridRenderer = new GridRenderer();
     }
 

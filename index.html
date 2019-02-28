@@ -18,7 +18,21 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-auto mx-auto my-5">
+        <div class="col-auto mx-auto">
+            <form>
+                <div class="form-group">
+                    <label for="numRows">Rows</label>
+                    <input type="number" min="1" max="16" class="form-control" id="numRows" value="8" placeholder="Num of Rows">
+                </div>
+                <div class="form-group">
+                    <label for="numCols">Columns</label>
+                    <input type="number" min="1" max="16" class="form-control" id="numCols" value="8" placeholder="Num of Cols">
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-auto mx-auto my-2">
             <button type="button" id="gameReset" class="btn btn-primary">Reset</button>
         </div>
     </div>
