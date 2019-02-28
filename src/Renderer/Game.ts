@@ -15,6 +15,7 @@ export class RenderGame {
         this.scene.rows = this.rows;
         this.scene.cols = this.cols;
         // this.scene.scene.restart(); // doesn't dynamically resize canvas, but is a nice refresh option
+        // this.scene.game.renderer.resize(this.cols * 50 + 50, this.rows * 50 + 50)
         this.game.destroy(true);
         this.buildGame();
     }

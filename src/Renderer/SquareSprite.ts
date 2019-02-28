@@ -94,6 +94,8 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
                         sprite.text.setText('');
                         sprite.defaultColor = 'clickedMine';
                     }
+                    GameService.gameOvertext.setVisible(true);
+                    GameService.gameOvertext.depth = 2;
                     console.log("GAME OVER");
                 }
                 // if has adjacent, done, just orange
@@ -108,6 +110,8 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
             }
             if (isRMB) {
                 color = 'clickedFlag';
+                this.defaultColor = 'clickedFlag';
+                this.text.setText('F');
             }
             this.swapTexture(color);
             this.defaultColor = color;
