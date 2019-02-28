@@ -22,7 +22,7 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
         'clickedMine': {color: 0xFF0000},
         'clickedFlag': {color: 0xEE8D6F}
     };
-    private debugMineLocs = true;
+    private debugMineLocs = false;
 
     constructor(square: Square, x = 0, y = 0, texture = '') {
         super(GameService.scene, x, y, texture);
