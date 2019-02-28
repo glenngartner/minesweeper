@@ -2,6 +2,8 @@
 
 ### Written in typescript, packed with webpack, rendered with Phaser 3
 
+#### Playable version here, on github pages: https://glenngartner.github.io/minesweeper/
+
 #### Built in less than a day for a peer programming exercise. Will probably not be actively maintained
 
 #### To get dependencies, run: 
