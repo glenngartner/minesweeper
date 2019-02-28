@@ -106,7 +106,7 @@ export class SquareSprite extends Phaser.GameObjects.Sprite {
                     }
                     GameService.gameOvertext.setVisible(true);
                     GameService.gameOvertext.depth = 2;
-                    console.log("GAME OVER");
+                    // console.log("GAME OVER");
                 }
                 // if has adjacent, done, just orange
                 else if (this.square.numAdjacentMines > 0) {
