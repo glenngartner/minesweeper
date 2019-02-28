@@ -111,7 +111,7 @@ export class Grid {
         let storedRandoms : number[] = [];
         let num = this._rows * this._cols / 6.4;
         let maxMines = Math.floor(num);
-        console.log(`mines generated `, maxMines);
+        // console.log(`mines generated `, maxMines);
         while(storedRandoms.length < maxMines){
             var r = Math.floor(Math.random() * this._rows * this._cols);
             if(storedRandoms.indexOf(r) === -1) storedRandoms.push(r);
